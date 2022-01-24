@@ -6,7 +6,7 @@
 #include<string.h>
 #include<time.h>
 
-char word[30][30];
+char word[50][30];
 char puzzle[40][40];
 
 /* Membaca file puzzle*/

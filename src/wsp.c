@@ -1,12 +1,5 @@
 #include "wsp.h"
 
-int main() {
-    int rowPuzzle, totalWords;
-    readFile(&rowPuzzle, &totalWords);
-    solve(rowPuzzle, totalWords);
-    return 0;
-}
-
 void readFile(int *rowPuzzle, int *totalWords) {
     FILE *file; 
     char fileName[20];
@@ -20,7 +13,7 @@ void readFile(int *rowPuzzle, int *totalWords) {
         exit(1);
     }
     else {
-        char line[40], line2[40];
+        char line[100], line2[40];
         int i, rows=0, cols;
 
         do
@@ -56,64 +49,122 @@ void readFile(int *rowPuzzle, int *totalWords) {
 }
 
 void solve(int rowPuzzle, int totalWords) {
-    int i, j, k;
-    int wordLength, comparison = 0;
+    int i, j, k, wordLength, comparison;
+    int wordsDir[totalWords], listComparison[totalWords], listWordLength[totalWords];
+    int listRow[totalWords], listCol[totalWords];
     int colPuzzle = strlen(puzzle[0]);
-    clock_t time = clock();
+    clock_t start = clock();
+    
     for (i = 0; i < totalWords; i++)
     {
-        printf("\n");
+        comparison = 0;
         for (j = 0; j < rowPuzzle; j++)
         {
             for (k = 0; k < colPuzzle; k++)
             {
                 wordLength = strlen(word[i]);
+                listWordLength[i] = wordLength;
                 if (checkLength(j-wordLength+1, k)&& searchUp(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionUp(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 1;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j-wordLength+1, k+wordLength-1) && searchUpRight(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionUpRight(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 2;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j, k+wordLength-1) && searchRight(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionRight(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 3;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j+wordLength-1, k+wordLength-1) && searchDownRight(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionDownRight(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 4;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j+wordLength-1, k) && searchDown(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionDown(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 5;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j+wordLength-1, k-wordLength+1) && searchDownLeft(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionDownLeft(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 6;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j, k-wordLength+1) && searchLeft(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionLeft(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 7;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }
                 else if (checkLength(j-wordLength+1, k-wordLength+1) && searchUpLeft(j,k,wordLength,i,&comparison))
                 {
-                    printf("%d. %s\n", i+1, word[i]);
-                    displaySolutionUpLeft(rowPuzzle, j, k, wordLength);
+                    wordsDir[i] = 8;
+                    listRow[i] = j;
+                    listCol[i] = k;
+                    listComparison[i] = comparison;
                 }   
             }
         }
     }
-    time = clock() - time;
-    double time_elapsed = ((double) time)/CLOCKS_PER_SEC;
-    printf("\nTime elapsed = %.3f seconds\n", time_elapsed);
+    clock_t end = clock();
+    double seconds = ((double) end - start)/CLOCKS_PER_SEC;
+    double ms = 1000 * seconds;
+
+    for (i = 0; i < totalWords; i++) 
+    {
+        printf("\n");
+        if (wordsDir[i] == 1) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionUp(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 2) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionUpRight(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 3) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionRight(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 4) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionDownRight(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 5) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionDown(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 6) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionDownLeft(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 7) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionLeft(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+        else if (wordsDir[i] == 8) {
+            printf("%d. %s - %d comparisons \n", i+1, word[i], listComparison[i]);
+            displaySolutionUpLeft(rowPuzzle, listRow[i], listCol[i], listWordLength[i]);
+        }
+    }
+
+    printf("\nTime elapsed = %f s or %f ms\n", seconds, ms);
 }
 
 int checkLength(int row, int col) {
@@ -141,7 +192,7 @@ int searchUp(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -162,7 +213,7 @@ int searchUpRight(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -182,7 +233,7 @@ int searchRight(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -203,7 +254,7 @@ int searchDownRight(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -223,7 +274,7 @@ int searchDown(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -244,7 +295,7 @@ int searchDownLeft(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -264,7 +315,7 @@ int searchLeft(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -285,7 +336,7 @@ int searchUpLeft(int row, int col, int wordLength, int x, int *comparison) {
         {
             match = 0;
         }
-        *comparison++;
+        *comparison += 1;
         wordLength--;
     }
     return match;
@@ -462,5 +513,3 @@ void displaySolutionUpLeft(int rowPuzzle, int row, int col, int wordLength) {
         printf("\n");
     }
 }
-
-// TODO: tambah comparison, laporan, dan readme
