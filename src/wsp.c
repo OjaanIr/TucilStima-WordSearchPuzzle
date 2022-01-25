@@ -164,6 +164,13 @@ void solve(int rowPuzzle, int totalWords) {
         }
     }
 
+    int sumComparisons = 0;
+    for (i = 0; i < totalWords; i++)
+    {
+        sumComparisons += listComparison[i];
+    }
+    
+    printf("\nTotal comparisons = %d comparisons", sumComparisons);
     printf("\nTime elapsed = %f s or %f ms\n", seconds, ms);
 }
 
