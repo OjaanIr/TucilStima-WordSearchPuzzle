@@ -3,7 +3,7 @@
 void readFile(int *rowPuzzle, int *totalWords) {
     FILE *file; 
     char fileName[20];
-    printf("Input file name (../test/namafile.txt): ");
+    printf("\nInput file name (../test/namafile.txt): ");
     scanf("%s", fileName);
     file = fopen(fileName, "r");
 
@@ -124,7 +124,7 @@ void solve(int rowPuzzle, int totalWords) {
         }
     }
     clock_t end = clock();
-    double seconds = ((double) end - start)/CLOCKS_PER_SEC;
+    double seconds = ((double) (end - start))/CLOCKS_PER_SEC;
     double ms = 1000 * seconds;
 
     for (i = 0; i < totalWords; i++) 
